@@ -12,6 +12,55 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hide loader initially
     loader.classList.add('hidden');
 
+    // --- Latest Info Logic ---
+    let latestData = null;
+
+    async function updateLatestInfo() {
+        const gameType = document.getElementById('game-type').value;
+        const jackpotElem = document.getElementById('current-jackpot');
+        const drawDetailsElem = document.getElementById('draw-details');
+        const lastBallsElem = document.getElementById('last-draw-balls');
+        const titleElem = document.getElementById('current-game-title');
+
+        if (!latestData) {
+            try {
+                const response = await fetch('/api/latest_info');
+                const data = await response.json();
+                if (data.success) {
+                    latestData = data;
+                }
+            } catch (err) {
+                console.error("Failed to fetch latest info", err);
+            }
+        }
+
+        if (latestData) {
+            const info = gameType === 'mega' ? latestData.mega : latestData.power;
+            titleElem.innerHTML = `<i class="fas fa-trophy" style="color: gold;"></i> Thông tin ${gameType === 'mega' ? 'Mega 6/45' : 'Power 6/55'}`;
+            jackpotElem.innerText = info.prize;
+            drawDetailsElem.innerText = `Kỳ #${info.draw_id} ngày ${info.draw_date}`;
+            
+            lastBallsElem.innerHTML = '';
+            if (info.last_draw && info.last_draw.length > 0) {
+                info.last_draw.forEach(num => {
+                    const b = document.createElement('div');
+                    b.className = 'ball-s';
+                    b.innerText = num < 10 ? '0' + num : num;
+                    lastBallsElem.appendChild(b);
+                });
+            } else {
+                lastBallsElem.innerHTML = '<div style="color: var(--text-muted); font-size: 0.9rem;">Chưa có dữ liệu</div>';
+            }
+        }
+    }
+
+    // Initial load
+    updateLatestInfo();
+
+    // Update on game change
+    document.getElementById('game-type').addEventListener('change', updateLatestInfo);
+    // --- End Latest Info Logic ---
+
     btn.addEventListener('click', async () => {
         // UI Reset
         ballsContainer.innerHTML = '';

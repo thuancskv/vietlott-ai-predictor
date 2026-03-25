@@ -276,6 +276,55 @@ option {
     font-weight: 600;
 }
 
+.balls-small {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.ball-s {
+    width: 32px;
+    height: 32px;
+    background: white;
+    color: #333;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 800;
+    font-size: 0.85rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border: 1px solid #ddd;
+}
+
+.tag-badge {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.jackpot-amount {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: white;
+    text-shadow: 0 0 20px rgba(248, 58, 163, 0.8), 0 0 40px rgba(248, 58, 163, 0.4);
+    letter-spacing: -1px;
+    line-height: 1;
+}
+
+.animate-pulse {
+    animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.02); opacity: 0.95; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
 /* Glass Button */
 .glass-btn {
     background: rgba(255, 255, 255, 0.1);

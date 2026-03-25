@@ -6,7 +6,7 @@
     <title>Vietlott AI Predictor Pro</title>
     <!-- Google Fonts for modern typography with Vietnamese support -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&subset=vietnamese&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/style.css?v=2">
+    <link rel="stylesheet" href="/static/style.css?v=3">
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> <!-- Icons if needed -->
 </head>
 <body>
@@ -19,6 +19,29 @@
         </header>
 
         <main>
+            <!-- Latest Info Dashboard -->
+            <div id="latest-info-container" class="glass-container" style="margin-bottom: 2rem; padding: 2rem; text-align: center; border: 1px solid rgba(255,255,255,0.15); background: rgba(255, 255, 255, 0.05);">
+                <div class="info-header" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem; width: 100%;">
+                    <h3 id="current-game-title" style="margin: 0; font-size: 1.3rem; letter-spacing: 1px; text-transform: uppercase; width: 100%; text-align: center;"><i class="fas fa-trophy" style="color: gold;"></i> Thông tin Mega 6/45</h3>
+                    <span id="draw-details" class="tag-badge" style="display: inline-block;">Đang cập nhật...</span>
+                </div>
+                
+                <div class="info-body" style="display: flex; flex-direction: column; align-items: center; gap: 2rem;">
+                    <div class="jackpot-section">
+                        <span style="font-size: 0.8rem; font-weight: 800; color: var(--primary); letter-spacing: 2px; display: block; margin-bottom: 0.5rem; text-transform: uppercase;">GIẢI JACKPOT ƯỚC TÍNH</span>
+                        <div id="current-jackpot" class="jackpot-amount animate-pulse">---</div>
+                    </div>
+                    
+                    <div class="last-result-section" style="width: 100%; max-width: 400px; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 15px; border: 1px solid rgba(255,255,255,0.05);">
+                        <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); letter-spacing: 1px; display: block; margin-bottom: 1rem;">KẾT QUẢ KỲ TRƯỚC</span>
+                        <div id="last-draw-balls" class="balls-small" style="justify-content: center;">
+                            <!-- Balls will be injected here -->
+                            <div style="color: var(--text-muted); font-size: 0.9rem;">Đang tải kết quả...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="controls">
                 <div class="control-group">
                     <label for="game-type">Chọn Loại Xổ Số</label>
@@ -116,6 +139,6 @@
         </div>
     </div>
 
-    <script src="/static/script.js?v=2"></script>
+    <script src="/static/script.js?v=3"></script>
 </body>
 </html>
