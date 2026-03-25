@@ -4,6 +4,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const ballsContainer = document.getElementById('balls-container');
     const algoInfo = document.getElementById('algo-info');
     
+    // Modal Elements
+    const infoModal = document.getElementById('info-modal');
+    const infoBtn = document.getElementById('info-btn');
+    const closeBtn = document.querySelector('.close-btn');
+
     // Hide loader initially
     loader.classList.add('hidden');
 
@@ -69,4 +74,19 @@ document.addEventListener('DOMContentLoaded', () => {
         algoInfo.classList.remove('hidden');
         btn.disabled = false;
     }
+
+    // Modal Logic
+    infoBtn.addEventListener('click', () => {
+        infoModal.classList.remove('hidden');
+    });
+
+    closeBtn.addEventListener('click', () => {
+        infoModal.classList.add('hidden');
+    });
+
+    window.addEventListener('click', (e) => {
+        if (e.target === infoModal) {
+            infoModal.classList.add('hidden');
+        }
+    });
 });
