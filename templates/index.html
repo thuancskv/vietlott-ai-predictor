@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vietlott AI Predictor Pro</title>
+    <!-- Google Fonts for modern typography with Vietnamese support -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&subset=vietnamese&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css?v=2">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> <!-- Icons if needed -->
+</head>
+<body>
+    <div class="background-animation"></div>
+    
+    <div class="glass-container">
+        <header>
+            <h1><span class="gradient-text">Vietlott</span> AI Predictor</h1>
+            <p>Dự báo bằng Hệ thống AI & Mối tương quan Lịch sử</p>
+        </header>
+
+        <main>
+            <div class="controls">
+                <div class="control-group">
+                    <label for="game-type">Chọn Loại Xổ Số</label>
+                    <select id="game-type">
+                        <option value="mega">Mega 6/45</option>
+                        <option value="power">Power 6/55</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="algo-type">Chọn Thuật Toán AI</label>
+                    <select id="algo-type">
+                        <option value="ensemble">Mô hình Phối hợp (Tất cả AI)</option>
+                        <option value="frequency_hot">Số Nóng (Tần suất xuất hiện nhiều)</option>
+                        <option value="frequency_cold">Số Lạnh (Bắt đáy số lâu chưa ra)</option>
+                        <option value="markov">Chuỗi Markov (Đoán số qua chu kỳ)</option>
+                        <option value="delta">Khoảng cách Delta (Mô hình điểm cách)</option>
+                        <option value="kmeans">Phân cụm K-Means (Học máy AI)</option>
+                        <option value="random_forest">Rừng Ngẫu Nhiên (Mô hình Cây AI)</option>
+                        <option value="genetic">Tiến hóa Di truyền (Trí tuệ Nhân tạo)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button id="generate-btn" class="glow-btn">
+                <span>Khởi tạo Dự Đoán</span>
+            </button>
+
+            <div class="results-container">
+                <div class="loader" id="loader">
+                    <div class="spinner"></div>
+                    <p>AI đang nạp và xử lý dữ liệu hàng ngàn kỳ quay số...</p>
+                </div>
+                
+                <div id="balls-container" class="balls hidden">
+                    <!-- Balls will be injected here by JS -->
+                </div>
+                <div id="algo-info" class="hidden"></div>
+            </div>
+        </main>
+        
+        <footer class="author-footer">
+            <p>Phần mềm được phát triển bởi <strong>thuancskv</strong></p>
+        </footer>
+    </div>
+
+    <script src="/static/script.js?v=2"></script>
+</body>
+</html>
