@@ -275,3 +275,108 @@ option {
     color: var(--primary);
     font-weight: 600;
 }
+
+/* Glass Button */
+.glass-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    padding: 12px 24px;
+    color: white;
+    border-radius: 50px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+.glass-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeInModal 0.3s ease-out;
+}
+@keyframes fadeInModal {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content.scrollable {
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    padding: 2.5rem 2rem;
+    width: 95%;
+    max-width: 900px;
+}
+.modal-content.scrollable::-webkit-scrollbar {
+    width: 6px;
+}
+.modal-content.scrollable::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 10px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 20px; right: 25px;
+    font-size: 2rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: 0.2s;
+    line-height: 1;
+}
+.close-btn:hover { color: white; transform: scale(1.1); }
+
+/* Cards Grid */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+.algo-card {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: left;
+    transition: all 0.3s ease;
+}
+.algo-card:hover {
+    transform: translateY(-8px);
+    background: rgba(255,255,255,0.05);
+    border-color: var(--primary);
+    box-shadow: 0 10px 20px rgba(248, 58, 163, 0.2);
+}
+.algo-card.full-width {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, rgba(248,58,163,0.1), rgba(88,51,255,0.1));
+}
+.icon-wrapper {
+    width: 50px; height: 50px;
+    border-radius: 12px;
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    display: flex; justify-content: center; align-items: center;
+    font-size: 1.5rem; color: white;
+    margin-bottom: 1rem;
+    box-shadow: 0 5px 15px rgba(248, 58, 163, 0.3);
+}
+.algo-card h3 {
+    margin-bottom: 0.8rem; font-size: 1.2rem; font-weight: 600;
+}
+.algo-card p {
+    font-size: 0.95rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 0;
+}
