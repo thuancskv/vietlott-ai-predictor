@@ -11,7 +11,15 @@ def get_historical_data(conn, game_type):
     return df
 
 def get_max_num(game_type):
-    return 45 if game_type == 'mega' else 55
+    # Accept various identifiers for the game type
+    lower = game_type.lower()
+    if 'mega' in lower:
+        return 45
+    elif 'power' in lower:
+        return 55
+    else:
+        # Default fallback to 45 for safety
+        return 45
 
 def fetch_flat_history(df):
     nums = []

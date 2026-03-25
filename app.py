@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request, render_template
 import os
 from database import get_db, init_db
 from algorithms import get_prediction
+from scraper import scrape_summary
 
 app = Flask(__name__)
 
@@ -12,8 +13,16 @@ def index():
 @app.route('/api/predict', methods=['POST'])
 def predict():
     data = request.json
-    game_type = data.get('game_type', 'mega')
+    raw_game_type = data.get('game_type', 'mega')
     algo_type = data.get('algo_type', 'ensemble')
+    
+    # Normalize game_type to simple identifiers used by the prediction engine
+    if 'mega' in raw_game_type.lower():
+        game_type = 'mega'
+    elif 'power' in raw_game_type.lower():
+        game_type = 'power'
+    else:
+        game_type = raw_game_type
     
     conn = get_db()
     try:
@@ -25,6 +34,19 @@ def predict():
         return jsonify({"success": False, "error": str(e), "trace": traceback.format_exc()})
     finally:
         conn.close()
+
+@app.route('/api/latest_info', methods=['GET'])
+def latest_info():
+    try:
+        mega_info = scrape_summary('mega')
+        power_info = scrape_summary('power')
+        return jsonify({
+            "success": True, 
+            "mega": mega_info,
+            "power": power_info
+        })
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
 
 if __name__ == '__main__':
     if not os.path.exists('vietlott.db'):
