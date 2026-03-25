@@ -58,11 +58,62 @@
                 </div>
                 <div id="algo-info" class="hidden"></div>
             </div>
+            
+            <div style="margin-top: 3rem;">
+                <button id="info-btn" class="glass-btn"><i class="fas fa-info-circle"></i> Nguyên lý Hoạt động</button>
+            </div>
         </main>
         
         <footer class="author-footer">
             <p>Phần mềm được phát triển bởi <strong>thuancskv</strong></p>
         </footer>
+    </div>
+
+    <!-- Info Modal -->
+    <div id="info-modal" class="modal hidden">
+        <div class="modal-content glass-container scrollable">
+            <span class="close-btn">&times;</span>
+            <h2 style="margin-bottom: 0.5rem;"><i class="fas fa-brain"></i> Nguyên lý Hoạt động AI</h2>
+            <p style="color:var(--text-muted); margin-bottom: 2rem;">Hệ thống ứng dụng phân tích Thống kê và Máy học để tìm kiếm quy luật tiềm ẩn.</p>
+            
+            <div class="cards-grid">
+                <div class="algo-card">
+                    <div class="icon-wrapper"><i class="fas fa-fire"></i></div>
+                    <h3>Tần suất (Hot/Cold)</h3>
+                    <p>Lọc các con số xuất hiện nhiều nhất (Nóng) để đánh theo đà, hoặc các con số lâu chưa ra (Lạnh) để mạo hiểm bắt đáy.</p>
+                </div>
+                <div class="algo-card">
+                    <div class="icon-wrapper"><i class="fas fa-arrows-alt-h"></i></div>
+                    <h3>Khoảng Cách Delta</h3>
+                    <p>Tính cự ly trung bình giữa các quả bóng trúng giải trong quá khứ, phục dựng lại bộ số mới có nhịp độ dãn cách tương đương.</p>
+                </div>
+                <div class="algo-card">
+                    <div class="icon-wrapper"><i class="fas fa-link"></i></div>
+                    <h3>Chuỗi Markov</h3>
+                    <p>Thiết lập ma trận xác suất chuyển đổi trạng thái: "Nếu số A xuất hiện, xác suất số B cộng hưởng cùng ra là bao nhiêu?".</p>
+                </div>
+                <div class="algo-card">
+                    <div class="icon-wrapper"><i class="fas fa-bullseye"></i></div>
+                    <h3>Phân cụm K-Means</h3>
+                    <p>Học Máy không giám sát gom thế bài lịch sử thành các Cụm đặc trưng, sau đó bắn tọa độ ngẫu nhiên vào rốn của các cụm đó.</p>
+                </div>
+                <div class="algo-card">
+                    <div class="icon-wrapper"><i class="fas fa-tree"></i></div>
+                    <h3>Rừng Ngẫu Nhiên</h3>
+                    <p>Học Máy có giám sát trồng hàng trăm "cây quyết định", học dữ liệu 3 thế bài gần nhất để ép dự đoán quy luật thế bài tương lai.</p>
+                </div>
+                <div class="algo-card">
+                    <div class="icon-wrapper"><i class="fas fa-microchip"></i></div>
+                    <h3>Tiến hóa Di truyền</h3>
+                    <p>Mô phỏng sinh học: Tạo 100 thế bài, chấm điểm, đào thải bài xấu, Lai Tạo & Đột Biến bộ tốt qua 10 thế hệ sinh tồn liên tiếp.</p>
+                </div>
+                <div class="algo-card full-width">
+                    <div class="icon-wrapper"><i class="fas fa-users-cog"></i></div>
+                    <h3>Phối hợp (Ensemble Voter)</h3>
+                    <p>Trí tuệ Bầy đàn: Ép tất cả 6 AI chạy cùng lúc như một cuộc Bầu cử. Quả bóng nào được các AI đồng loạt gọi tên nhiều nhất sẽ thắng!</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="/static/script.js?v=2"></script>
