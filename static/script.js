@@ -37,14 +37,27 @@ document.addEventListener('DOMContentLoaded', () => {
         if (latestData) {
             const info = gameType === 'mega' ? latestData.mega : latestData.power;
             titleElem.innerHTML = `<i class="fas fa-trophy" style="color: gold;"></i> Thông tin ${gameType === 'mega' ? 'Mega 6/45' : 'Power 6/55'}`;
-            jackpotElem.innerText = info.prize;
+            if (gameType === 'power' && info.prize.includes('|')) {
+                const parts = info.prize.split('|');
+                // Use smaller font for J1/J2 split
+                jackpotElem.innerHTML = `<div style="font-size: 0.75em; margin-bottom: 5px; color: #ffeb3b;">${parts[0].trim()}</div>` + 
+                                       `<div style="font-size: 0.75em; color: #fff;">${parts[1].trim()}</div>`;
+            } else {
+                jackpotElem.innerText = info.prize;
+            }
             drawDetailsElem.innerText = `Kỳ #${info.draw_id} ngày ${info.draw_date}`;
             
             lastBallsElem.innerHTML = '';
             if (info.last_draw && info.last_draw.length > 0) {
-                info.last_draw.forEach(num => {
+                info.last_draw.forEach((num, idx) => {
                     const b = document.createElement('div');
                     b.className = 'ball-s';
+                    // Special styling for the 7th ball in Power 6/55
+                    if (gameType === 'power' && idx === 6) {
+                        b.style.background = 'radial-gradient(circle at 30% 30%, #ffeb3b, #fbc02d)';
+                        b.style.color = '#000';
+                        b.style.borderColor = '#f9a825';
+                    }
                     b.innerText = num < 10 ? '0' + num : num;
                     lastBallsElem.appendChild(b);
                 });

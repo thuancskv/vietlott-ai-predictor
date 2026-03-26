@@ -6,6 +6,10 @@ from scraper import scrape_summary
 
 app = Flask(__name__)
 
+# Initialize database if it doesn't exist (important for Render/Gunicorn)
+if not os.path.exists('vietlott.db'):
+    init_db()
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -49,6 +53,4 @@ def latest_info():
         return jsonify({"success": False, "error": str(e)})
 
 if __name__ == '__main__':
-    if not os.path.exists('vietlott.db'):
-        init_db()
     app.run(debug=True, port=5000)

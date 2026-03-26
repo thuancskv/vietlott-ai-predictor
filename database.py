@@ -22,11 +22,18 @@ def init_db():
             n4 INTEGER NOT NULL,
             n5 INTEGER NOT NULL,
             n6 INTEGER NOT NULL,
+            n7 INTEGER, -- Optional extra ball for Power 6/55
             jackpot TEXT,
             UNIQUE(game_type, draw_date)
         )
     ''')
-    conn.commit()
+    # Migration: check if n7 exists, if not add it
+    try:
+        c.execute("ALTER TABLE draws ADD COLUMN n7 INTEGER")
+        conn.commit()
+    except sqlite3.OperationalError:
+        # Column already exists
+        pass
     conn.close()
 
 if __name__ == '__main__':

@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import re
 from datetime import datetime, timedelta
 import random
+import sqlite3
 from database import get_db, init_db
 
 def _generate_synthetic_draws(game_type, count=100):
@@ -83,10 +84,16 @@ def save_to_db(game_type, draws):
             if d_date == "Unknown":
                 d_date = f"Unknown_{random.randint(1000,99999)}"
             
-            c.execute('''
-                INSERT INTO draws (game_type, draw_date, n1, n2, n3, n4, n5, n6)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            ''', (game_type, d_date, *draw['nums']))
+            # Prepare columns and values dynamically based on number of balls
+            num_balls = len(draw['nums'])
+            col_names = ", ".join([f"n{i+1}" for i in range(num_balls)])
+            placeholders = ", ".join(["?" for _ in range(num_balls)])
+            
+            query = f'''
+                INSERT INTO draws (game_type, draw_date, {col_names})
+                VALUES (?, ?, {placeholders})
+            '''
+            c.execute(query, (game_type, d_date, *draw['nums']))
             count += 1
         except sqlite3.IntegrityError:
             pass
@@ -115,42 +122,64 @@ def scrape_summary(game_type):
         
         # Prize extraction
         prize = "Đang cập nhật..."
-        prize_elem = soup.select_one('.jackpot-price')
-        if not prize_elem:
-             # Try finding h3 that looks like a jackpot (contains dots and is a number)
-             h3s = soup.find_all('h3')
-             for h3 in h3s:
-                 text = h3.get_text().strip()
-                 if re.match(r'^[\d\.]+$', text) and len(text) > 7:
-                     prize = text + " VNĐ"
-                     break
-        else:
-            prize = prize_elem.get_text().strip() + " VNĐ"
         
-        if prize == "Đang cập nhật...":
-            # Fallback for Jackpot 1/2 in Power 6/55
-            jackpot_elems = soup.select('.jackpot-price')
-            if len(jackpot_elems) >= 2:
-                prize = f"J1: {jackpot_elems[0].get_text().strip()} | J2: {jackpot_elems[1].get_text().strip()}"
+        # Priority 1: .so_tien container (found in both Mega and Power)
+        prize_elements = soup.select('.so_tien h3')
+        if prize_elements:
+            if len(prize_elements) >= 2 and 'power' in game_type.lower():
+                # Power 6/55 J1 and J2
+                prize = f"J1: {prize_elements[0].get_text().strip()} | J2: {prize_elements[1].get_text().strip()} VNĐ"
+            else:
+                # Mega or single jackpot
+                prize = prize_elements[0].get_text().strip() + " VNĐ"
+        else:
+            # Table fallback - specifically the last <td> in the first row of <tbody>
+            # because the 4th column contains the amount
+            target_row = soup.select_one('table tbody tr')
+            if target_row:
+                 cells = target_row.select('td')
+                 if len(cells) >= 4:
+                     prize = cells[3].get_text().strip() + " VNĐ"
         
         # Latest draw numbers
-        # Try multiple selectors
-        balls = soup.select('.day_so_ket_qua_nen_trang span')
-        if not balls:
-            balls = soup.select('.bong_tron')
+        # Selector: span.bong_tron (highly consistent in static HTML)
+        balls = soup.select('span.bong_tron')
             
         last_draw = []
         if balls:
             for b in balls:
                 try:
-                    num = int(b.text.strip())
-                    if 1 <= num <= 55:
-                        last_draw.append(num)
+                    txt = b.text.strip()
+                    if txt:
+                        num = int(txt)
+                        if 1 <= num <= 55:
+                            last_draw.append(num)
                 except: pass
             
-            # Ensure we only take the first set of numbers (usually 6 or 7)
-            if len(last_draw) > 7:
-                last_draw = last_draw[:7 if 'power' in game_type else 6]
+            # Ensure we only take one set of results
+            limit = 7 if 'power' in game_type.lower() else 6
+            if len(last_draw) > limit:
+                last_draw = last_draw[:limit]
+        
+        # Date and ID
+        # Selector: .chitietketqua_title h5 b
+        info_header = soup.select_one('.chitietketqua_title h5')
+        draw_id = "---"
+        draw_date = "---"
+        if info_header:
+            b_tags = info_header.select('b')
+            if len(b_tags) >= 2:
+                draw_id = b_tags[0].get_text().strip()
+                draw_date = b_tags[1].get_text().strip()
+        
+        if draw_id == "---" or draw_date == "---":
+            # Regex fallback
+            header_text = soup.get_text()
+            header_text = re.sub(r'\s+', ' ', header_text)
+            match = re.search(r'#(\d+)\s+ngày\s+(\d{2}/\d{2}/\d{4})', header_text)
+            if match:
+                if draw_id == "---": draw_id = match.group(1)
+                if draw_date == "---": draw_date = match.group(2)
         
         # If still empty, try parsing the whole page text for 2-digit patterns near "Kết quả"
         if not last_draw:
@@ -162,10 +191,28 @@ def scrape_summary(game_type):
                 last_draw = [int(n) for n in all_nums[:6]]
         
         # Date and ID
+        # New pattern from <h5><b>#01488</b> ngày <b>25/03/2026</b></h5>
         header_text = soup.get_text()
+        # Clean up text to help regex
+        header_text = re.sub(r'\s+', ' ', header_text)
+        
         match = re.search(r'#(\d+)\s+ngày\s+(\d{2}/\d{2}/\d{4})', header_text)
         draw_id = match.group(1) if match else "---"
         draw_date = match.group(2) if match else "---"
+
+        if draw_id == "---":
+            # Try specific b tag search
+            b_tags = soup.find_all('b')
+            for b in b_tags:
+                txt = b.get_text().strip()
+                if txt.startswith('#'):
+                    draw_id = txt
+                    break
+        
+        if draw_date == "---":
+             date_match = re.search(r'\d{2}/\d{2}/\d{4}', header_text)
+             if date_match:
+                 draw_date = date_match.group(0)
 
         return {
             'prize': prize,
@@ -188,8 +235,16 @@ def run_scraper():
         simpler_name = 'mega' if 'mega' in game else 'power'
         # Use the summary to store draws and also capture prize info if needed
         summary = scrape_summary(game)
-        added = save_to_db(simpler_name, summary['draws'])
-        print(f"Added {added} new draws for {simpler_name}")
+        
+        # Fixed: summary returned by scrape_summary has 'last_draw', not 'draws'
+        if summary['last_draw']:
+            draw_data = [{
+                "date": summary['draw_date'],
+                "nums": summary['last_draw'],
+                "draw_id": summary['draw_id']
+            }]
+            added = save_to_db(simpler_name, draw_data)
+            print(f"Added {added} new draw for {simpler_name}")
         if summary['prize']:
             print(f"Current prize for {simpler_name}: {summary['prize']}")
         if summary['last_draw']:
